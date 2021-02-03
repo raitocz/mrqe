@@ -1,0 +1,19 @@
+{
+  "require": {
+    "php": "8.0.*",
+    "league/container": "^3.3",
+    "league/plates": "^3.4",
+    "guzzlehttp/guzzle": "^7.0",
+    "filp/whoops": "^2.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "Carvago\\Mrqe\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require-dev": {
+    "symfony/var-dumper": "^5.2"
+  }
+}

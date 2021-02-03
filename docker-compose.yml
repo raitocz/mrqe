@@ -1,0 +1,29 @@
+version: "3.4"
+services:
+
+    # PHP service
+    app:
+        build: .docker/php
+        container_name: php-app
+        working_dir: /app
+        volumes:
+            - ./:/app
+        networks:
+            - app-network
+        tty: true
+
+    # Nginx service
+    nginx:
+        image: nginx:alpine
+        container_name: php-nginx
+        ports:
+            - 8900:80
+        volumes:
+            - ./:/app
+            - ./.docker/nginx/conf.d/:/etc/nginx/conf.d/
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge
