@@ -30,6 +30,11 @@ example configuration:
 
 After you set your preferences you can simply use command:
 ```shell
+make init
+```
+
+Next time you want to start this app just call:
+```shell
 make run
 ```
 

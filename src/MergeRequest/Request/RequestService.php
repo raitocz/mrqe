@@ -35,6 +35,7 @@ class RequestService
     private const APPROVALS_EP = self::BASE_URI . '/projects/%s/merge_requests/%s/approvals';
 
     private Config $config;
+    private \stdClass $approvals;
 
     public function __construct(private JsonConfigRepository $configRepository, private ClientInterface $client)
     {
@@ -91,7 +92,8 @@ class RequestService
                 $item->work_in_progress,
                 $item->web_url,
                 $item->has_conflicts,
-                $this->isPipelineSucceedForMr($item->project_id, $item->iid)
+                $this->isPipelineSucceedForMr($item->project_id, $item->iid),
+                $this->countOtherApprovals($item->project_id, $item->iid)
             );
         }
 
@@ -132,7 +134,11 @@ class RequestService
 
     private function isApprovedByMe(string $username, int $projectId, int $iid): bool
     {
-        $approvals = json_decode($this->fetchApprovalsForMergeRequest($projectId, $iid)->getBody()->getContents());
+        $this->approvals = $approvals = json_decode(
+            $this->fetchApprovalsForMergeRequest($projectId, $iid)
+                ->getBody()
+                ->getContents()
+        );
 
         foreach ($approvals->approved_by as $item) {
             if($item->user->username === $username){
@@ -141,6 +147,11 @@ class RequestService
         }
 
         return false;
+    }
+
+    private function countOtherApprovals(int $projectId, int $iid): int
+    {
+        return count($this->approvals->approved_by);
     }
 
     private function fetchApprovalsForMergeRequest(int $projectId, int $iid): ResponseInterface

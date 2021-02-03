@@ -56,6 +56,12 @@ use Carvago\Mrqe\MergeRequest\MergeRequestsList;
                     </div>
 
                     <div>
+                        <strong>Other approvals:</strong>
+                        <?= $mergeRequest->getOtherApprovals() ?>
+                    </div>
+
+
+                    <div>
                         <strong>Target branch:</strong>
                         <?= $mergeRequest->getTargetBranch() ?>
                     </div>

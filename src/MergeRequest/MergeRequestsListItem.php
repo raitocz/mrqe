@@ -16,7 +16,8 @@ class MergeRequestsListItem
         private bool $wip,
         private string $webUrl,
         private bool $hasConflicts,
-        private bool $pipelineSuccess
+        private bool $pipelineSuccess,
+        private int $otherApprovals
     )
     {
     }
@@ -70,4 +71,10 @@ class MergeRequestsListItem
     {
         return $this->pipelineSuccess;
     }
+
+    public function getOtherApprovals(): int
+    {
+        return $this->otherApprovals;
+    }
+
 }
