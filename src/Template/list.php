@@ -62,7 +62,7 @@ use Carvago\Mrqe\MergeRequest\MergeRequestsList;
 
                     <div>
                         <strong>Needs rebase:</strong>
-                        <?= $mergeRequest->isHasConflicts() ? "Yes" : "No" ?>
+                        <?= $mergeRequest->isHasConflicts() ? "No" : "Yes" ?>
                     </div>
 
                     <div>
