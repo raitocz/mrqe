@@ -52,27 +52,30 @@ use Carvago\Mrqe\MergeRequest\MergeRequestsList;
 
                 <div class="d-flex justify-content-between small">
                     <div>
-                        <strong>Date created:</strong> <?= $mergeRequest->getCreatedAt()->format('d.m.Y H:i:s') ?>
+                        <strong>Date created:</strong><br>
+                        <?= $mergeRequest->getCreatedAt()->format('d.m.Y H:i:s') ?>
                     </div>
 
                     <div>
-                        <strong>Other approvals:</strong>
-                        <?= $mergeRequest->getOtherApprovals() ?>
-                    </div>
-
-
-                    <div>
-                        <strong>Target branch:</strong>
-                        <?= $mergeRequest->getTargetBranch() ?>
+                        <strong>Other approvals:</strong><br>
+                        <span <? if($mergeRequest->getOtherApprovals() > 0): ?>class="text-danger"<? endif; ?>>
+                            <?= $mergeRequest->getOtherApprovals() ?>
+                        </span>
                     </div>
 
                     <div>
-                        <strong>Needs rebase:</strong>
+                        <strong>Comments:</strong><br>
+                        <?= $mergeRequest->getNotesCount() ?>
+                    </div>
+
+                    <div>
+                        <strong>Needs rebase:</strong><br>
                         <?= $mergeRequest->isHasConflicts() ? "No" : "Yes" ?>
+                        <i class="fa fa-fw fa-code-branch" title="Target branch: <?= $mergeRequest->getTargetBranch() ?>"></i>
                     </div>
 
                     <div>
-                        <strong>Pipeline status:</strong>
+                        <strong>Pipeline status:</strong><br>
                         <? if ($mergeRequest->isPipelineSuccess()): ?>
                             <span class="badge bg-success"><i class="fa fa-fw fa-check"></i> Success</span>
                         <? else: ?>
