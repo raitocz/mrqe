@@ -8,7 +8,7 @@ This simple tool shows you all pending merge requests of your team members. It w
 - Refreshed frequently in interval you decide (default is 1 minute)
 
 ## Installation
-Clone this repository locally and edit the `config.json` file to your likings:
+1. Clone this repository locally, copy & rename `config.json.dist` to `config.json` and edit the  file to your likings:
 
 - **myUsername**: Your GitLab username, usually with dot between name & surname
 - **followedUsers**: GitLab usernames of your team memebers which requests you want to see
@@ -27,19 +27,21 @@ example configuration:
   "personalAccessToken": "EWZr3D49RfAkEtOkENtaY"
 }
 ```
-
-After you set your preferences you can simply use command:
+2. If you are using docker, you can simply use command:
 ```shell
 make init
 ```
 
-Next time you want to start this app just call:
+3. Next time you want to start this app just call:
 ```shell
 make run
 ```
 
 ## Requirements & stack
-This app requires both docker & docker-compose to be installed but can be run without it using locally installed:
+- Docker & docker-compose
+  
+or
+  
 - PHP 8.0.1 fpm
 - cURL
 - nginx/apache server
