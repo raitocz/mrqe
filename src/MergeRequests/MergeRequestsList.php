@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Carvago\Mrqe\MergeRequest;
+namespace Carvago\Mrqe\MergeRequests;
 
 class MergeRequestsList
 {
     public function __construct(
         /** @var $items array<MergeRequestsListItem> */
-        private array $items
+        private array $items,
+        private bool $listMine,
     ) {
     }
 
@@ -20,5 +21,8 @@ class MergeRequestsList
         return $this->items;
     }
 
-
+    public function isListMine(): bool
+    {
+        return $this->listMine;
+    }
 }

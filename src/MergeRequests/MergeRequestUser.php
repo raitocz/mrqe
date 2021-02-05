@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Carvago\Mrqe\MergeRequest;
+namespace Carvago\Mrqe\MergeRequests;
 
 class MergeRequestUser
 {

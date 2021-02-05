@@ -1,6 +1,6 @@
-<?php
+<?
 
-use Carvago\Mrqe\MergeRequest\MergeRequestsList;
+use Carvago\Mrqe\MergeRequests\MergeRequestsList;
 
 ?>
 <!DOCTYPE html>
@@ -12,7 +12,8 @@ use Carvago\Mrqe\MergeRequest\MergeRequestsList;
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content=""/>
-    <meta http-equiv="refresh" content="<?= /** @var int $refreshIntervalSeconds */ $refreshIntervalSeconds ?>">
+    <meta http-equiv="refresh" content="<?= /** @var int $refreshIntervalSeconds */
+    $refreshIntervalSeconds ?>">
 
     <link rel="icon" type="image/x-icon" href=""/>
     <link rel="icon" sizes="192x192" href=""/>
@@ -26,69 +27,27 @@ use Carvago\Mrqe\MergeRequest\MergeRequestsList;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 </head>
 
-<body class="container-lg">
-<h1 class="mt-5">My active merge requests:</h1>
-<hr>
+<body class="container-fluid">
 
-<? /** @var array<MergeRequestsList> $mergeRequestByUsers */ ?>
-<? foreach ($mergeRequestByUsers as $username => $mrs): ?>
+<div class="row">
+    <div class="col col-lg-6 col-md-12 col-sm-12">
+        <h1 class="mt-5">Active merge requests:</h1>
+        <hr>
 
-    <h2><?= $username ?> <span class="badge bg-secondary"><?= count($mrs->getItems()) ?></span></h2>
-    <ul class="list-group mb-5">
-        <? foreach ($mrs->getItems() as $mergeRequest): ?>
+        <? /** @var array<MergeRequestsList> $mergeRequestByUsers */ ?>
+        <?= $this->insert('table', ['mergeRequestByUsers' => $mergeRequestByUsers]) ?>
+    </div>
 
-            <li class="list-group-item<? if(!$mergeRequest->isPipelineSuccess() || $mergeRequest->isWip()): ?> text-muted bg-light<? endif; ?>">
-                <div class="mb-2">
-                    <? if ($mergeRequest->isWip()): ?>
-                        <i class="fa fa-fw fa-tools text-warning" title="WIP/Draft"></i>
-                    <? else: ?>
-                        <i class="fa fa-fw fa-check text-success"title="Ready to CR"></i>
-                    <? endif; ?>
 
-                    <a href="<?= $mergeRequest->getWebUrl() ?>" <? if(!$mergeRequest->isPipelineSuccess() || $mergeRequest->isWip()): ?>class="text-muted"<? endif; ?>>
-                        <strong><?= $mergeRequest->getTitle() ?></strong>
-                    </a>
-                </div>
+    <div class="col col-lg-6 col-md-12 col-sm-12">
+        <h1 class="mt-5">My open requests:</h1>
+        <hr>
 
-                <div class="d-flex justify-content-between small">
-                    <div>
-                        <strong>Date created:</strong><br>
-                        <?= $mergeRequest->getCreatedAt()->format('d.m.Y H:i:s') ?>
-                    </div>
+        <? /** @var array<MergeRequestsList> $myMergeRequests */ ?>
+        <?= $this->insert('table', ['mergeRequestByUsers' => $myMergeRequests]) ?>
+    </div>
+</div>
 
-                    <div>
-                        <strong>Other approvals:</strong><br>
-                        <span <? if($mergeRequest->getOtherApprovals() > 0): ?>class="text-danger"<? endif; ?>>
-                            <?= $mergeRequest->getOtherApprovals() ?>
-                        </span>
-                    </div>
-
-                    <div>
-                        <strong>Comments:</strong><br>
-                        <?= $mergeRequest->getNotesCount() ?>
-                    </div>
-
-                    <div>
-                        <strong>Needs rebase:</strong><br>
-                        <?= $mergeRequest->isHasConflicts() ? "No" : "Yes" ?>
-                        <i class="fa fa-fw fa-code-branch" title="Target branch: <?= $mergeRequest->getTargetBranch() ?>"></i>
-                    </div>
-
-                    <div>
-                        <strong>Pipeline status:</strong><br>
-                        <? if ($mergeRequest->isPipelineSuccess()): ?>
-                            <span class="badge bg-success"><i class="fa fa-fw fa-check"></i> Success</span>
-                        <? else: ?>
-                            <span class="badge bg-danger"><i class="fa fa-fw fa-times"></i> Failed</span>
-                        <? endif; ?>
-                    </div>
-                </div>
-            </li>
-
-        <? endforeach; ?>
-    </ul>
-
-<? endforeach; ?>
 </body>
 
 </html>

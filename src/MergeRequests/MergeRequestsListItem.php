@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Carvago\Mrqe\MergeRequest;
+namespace Carvago\Mrqe\MergeRequests;
+
+use Carvago\Mrqe\Pipelines\PipelineStatus;
 
 class MergeRequestsListItem
 {
@@ -13,10 +15,11 @@ class MergeRequestsListItem
         private string $author,
         private string $targetBranch,
         private int $notesCount,
+        private int $notesResolvedCount,
         private bool $wip,
         private string $webUrl,
         private bool $hasConflicts,
-        private bool $pipelineSuccess,
+        private string $pipelineStatus,
         private int $otherApprovals
     )
     {
@@ -52,6 +55,11 @@ class MergeRequestsListItem
         return $this->notesCount;
     }
 
+    public function getNotesResolvedCount(): int
+    {
+        return $this->notesResolvedCount;
+    }
+
     public function isWip(): bool
     {
         return $this->wip;
@@ -67,9 +75,21 @@ class MergeRequestsListItem
         return $this->hasConflicts;
     }
 
-    public function isPipelineSuccess(): bool
+    public function getPipelineStatus(): string
     {
-        return $this->pipelineSuccess;
+        return $this->pipelineStatus;
+    }
+
+    public function isPipelineStatusSuccess(): bool{
+        return $this->pipelineStatus === PipelineStatus::SUCCESS;
+    }
+
+    public function isPipelineStatusPending(): bool{
+        return $this->pipelineStatus === PipelineStatus::PENDING;
+    }
+
+    public function isPipelineStatusFailed(): bool{
+        return $this->pipelineStatus === PipelineStatus::FAILED;
     }
 
     public function getOtherApprovals(): int

@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Carvago\Mrqe;
 
+use Carvago\Mrqe\Approvals\ApprovalsFacade;
 use Carvago\Mrqe\Config\JsonConfigRepository;
 use Carvago\Mrqe\Config\JsonFileReader;
-use Carvago\Mrqe\MergeRequest\MergeRequestsController;
-use Carvago\Mrqe\MergeRequest\Request\RequestService;
+use Carvago\Mrqe\GitLab\GitLabRequestService;
+use Carvago\Mrqe\MergeRequests\MergeRequestsController;
+use Carvago\Mrqe\MergeRequests\MergeRequestsListFacade;
+use Carvago\Mrqe\Notes\NotesFacade;
+use Carvago\Mrqe\Pipelines\PipelinesFacade;
+use Carvago\Mrqe\RequestsOverview\RequestsOverviewListService;
 use GuzzleHttp\Client;
 use League\Container\Container;
 use League\Plates\Engine;
@@ -38,8 +43,8 @@ class Kernel
 
     private function loadErrorHandler(): void
     {
-        $handler = new Run;
-        $handler->pushHandler(new PrettyPageHandler);
+        $handler = new Run();
+        $handler->pushHandler(new PrettyPageHandler());
         $handler->register();
     }
 
@@ -48,12 +53,31 @@ class Kernel
         $container = new Container();
 
         $container->add(Engine::class)->addArgument(self::DIR_ROOT . '/src/Template');
+
         $container->add(JsonFileReader::class);
         $container->add(JsonConfigRepository::class)->addArgument(JsonFileReader::class);
+
         $container->add(Client::class);
-        $container->add(RequestService::class)->addArguments([
-            $container->get(JsonConfigRepository::class),
-            $container->get(Client::class),
+
+        $container->add(GitLabRequestService::class)->addArguments([
+            JsonConfigRepository::class,
+            Client::class,
+        ]);
+
+        $container->add(ApprovalsFacade::class)->addArgument(GitLabRequestService::class);
+        $container->add(PipelinesFacade::class)->addArgument(GitLabRequestService::class);
+        $container->add(NotesFacade::class)->addArgument(GitLabRequestService::class);
+        $container->add(MergeRequestsListFacade::class)->addArguments([
+            GitLabRequestService::class,
+            JsonConfigRepository::class,
+            ApprovalsFacade::class,
+            PipelinesFacade::class,
+            NotesFacade::class
+        ]);
+
+        $container->add(RequestsOverviewListService::class)->addArguments([
+            JsonConfigRepository::class,
+            MergeRequestsListFacade::class
         ]);
 
         $this->container = $container;
@@ -63,7 +87,7 @@ class Kernel
     {
         $controller = new MergeRequestsController(
             $this->container->get(Engine::class),
-            $this->container->get(RequestService::class),
+            $this->container->get(RequestsOverviewListService::class),
             $this->container->get(JsonConfigRepository::class)
         );
         echo $controller();

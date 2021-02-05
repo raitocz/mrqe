@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Carvago\Mrqe\MergeRequest;
+namespace Carvago\Mrqe\MergeRequests;
 
 use Carvago\Mrqe\Config\Config;
 use Carvago\Mrqe\Config\JsonConfigRepository;
-use Carvago\Mrqe\MergeRequest\Request\RequestService;
+use Carvago\Mrqe\RequestsOverview\RequestsOverviewListService;
 use League\Plates\Engine;
 
 final class MergeRequestsController
@@ -15,7 +15,7 @@ final class MergeRequestsController
 
     public function __construct(
         private Engine $template,
-        private RequestService $requestService,
+        private RequestsOverviewListService $requestService,
         JsonConfigRepository $configRepository
     ) {
         $this->config = $configRepository->getConfig();
@@ -23,11 +23,13 @@ final class MergeRequestsController
 
     public function __invoke(): string
     {
-        $usersMergeRequests = $this->requestService->getRequestsList();
+        $usersMergeRequests = $this->requestService->getRequestsList($this->config->getFollowedUsers());
+        $myMergeRequests = $this->requestService->getRequestsList([$this->config->getMyUsername()]);
         return $this->template->render(
             'list',
             [
                 'mergeRequestByUsers' => $usersMergeRequests,
+                'myMergeRequests' => $myMergeRequests,
                 'refreshIntervalSeconds' => $this->config->getRefreshIntervalSeconds()
             ]
         );
